@@ -57,3 +57,64 @@ Then(/^the user closes the browser$/, function () {
     browser.sleep(1000)
     return browser.close();
 });
+
+
+Then(/^the user reads the title as "([^"]*)"$/, function(title) {
+    return $('.example').getText().then(function(text){
+      expect(text).to.contain(title);
+      return browser.sleep(2000);
+    });
+});
+
+Then(/^the user can hover over the images$/, async function() {
+  await browser.actions().mouseMove($('.figure>img')).perform();
+  await browser.sleep(4000);
+
+  let lastHover = await $$('.figure').last();
+  await browser.actions().mouseMove(lastHover).perform();
+  return browser.sleep(4000);
+});
+
+Then(/^the user can drag and drop the squares$/, async function() {
+  await browser.sleep(2000);
+  await browser.actions().dragAndDrop(
+    element(by.id('column-a')),
+    element(by.id('column-b'))
+  ).perform();
+  return browser.sleep(2000);
+});
+
+Then(/^the user does a mouse click on "([^"]*)"$/, async function(action) {
+  await browser.actions().click(element(by.partialButtonText(action))).perform();
+  return browser.sleep(2000);
+});
+
+Then(/^the user accepts the alert$/, async function() {
+  await browser.switchTo().alert().accept();
+  await expect($('#result').getText()).to.eventually.contain('Ok');
+  return browser.sleep(2000);
+});
+
+Then(/^the user scrolls to the footer icon$/, async function() {
+  await browser.executeScript('arguments[0].scrollIntoView();', $('.rtm-footer-milky')).then(function(){
+    browser.sleep(2000);
+    return element(by.linkText('About')).click();
+  })
+});
+
+Then(/^the user scrolls down to the bottom of the Page$/, async function() {
+  await browser.executeScript('window.scrollTo(0,document.body.scrollHeight)').then(function(){
+    return browser.sleep(2000);
+  })
+});
+
+Then(/^the user scrolls up to the top of the page$/, async function() {
+  await browser.executeScript('window.scrollTo(0,0)').then(function(){
+    return browser.sleep(2000);
+  })
+});
+
+Then(/^the user uses JavaScript Click$/, async function() {
+  await browser.executeScript('arguments[0].click();', element(by.linkText('Upgrade')));
+  return browser.sleep(2000);
+});
